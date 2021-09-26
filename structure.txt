@@ -1,0 +1,25 @@
+Modules
+    game
+        function startGame
+        
+        Modules
+            gameBoard
+                function checkwin
+                function _clearBoard
+            
+
+        Objects
+            player
+                name
+                winCounter
+                playCounter
+                gameCounter
+                function getName
+                function play
+                function win
+                
+                
+
+        Obj instance
+            player1
+            player2
