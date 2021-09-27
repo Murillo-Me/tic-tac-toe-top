@@ -86,11 +86,27 @@ const game = (function () {
             popUp.classList.toggle('active')
         }, totalTime)
     }
+
+    function displayForm(numberOfInputs, ...message) {
+        
+        setTimeout(() => {
+            const popUp = document.querySelector('.pop-up')
+            popUp.classList.toggle('active')
+            popUp.textContent = ''
+
+            for (let i = 0; i < numberOfInputs; i++) {
+                popUp.innerHTML += `<span>${message[i]}</span>`
+                console.log(popUp);
+                console.log(message[i]);
+            }
+        }, totalTime)
+    }
     
     function startGame() {
         gameBoard.clearBoard()
         displayMessage('Welcome! Are you ready for game of Tic-Tac-Toe?', 2000)
         displayMessage('Then, pick your weapon and your warrior name!', 2000)
+        displayForm(2, 'test', 'test2')
     }
     
     startGame()
