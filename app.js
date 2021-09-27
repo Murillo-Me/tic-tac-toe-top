@@ -3,11 +3,16 @@ const game = (function () {
     const allPlayUnits = document.querySelectorAll('.play-unit')
     
     let roundNumber = 1
+    let totalTime = 0
 
     const gameBoard = (function() {
 
-        function updateBoardOnPlay() {
-            allPlayUnits.forEach(div => div.addEventListener('DOMCharacterDataModified', () => console.log('test')))
+        const boardArray = new Array(9).fill(null)
+
+        function updateBoardOnPlay(index, symb) {
+            console.log(this);
+            this.textContent = symb
+            boardArray[index] = symb
         }
 
         function clearBoard() {
@@ -43,16 +48,15 @@ const game = (function () {
 
         let winCounter = 0
         let playCounter = 0
-        let gameCounter = 0
 
         function getName() {
             return name
         }
         
         function play() {
-            this.textContent = symbol
+            gameBoard.updateBoardOnPlay.call(this,this.getAttribute('data-key'), symbol)
             gameBoard.nextRound()
-            console.log(this);
+            playCounter++
         }
         
         function win() {
@@ -68,15 +72,28 @@ const game = (function () {
         return { name, symbol, play, win, isWinner, winCounter}
     }
 
+    function displayMessage(message, messageTime) {
+        const popUp = document.querySelector('.pop-up')
+        const span = popUp.querySelector('span')
+        
+        setTimeout(() => {
+            popUp.classList.toggle('active')
+            span.textContent = message
+        }, totalTime)
+
+        totalTime += messageTime
+        setTimeout(() => {
+            popUp.classList.toggle('active')
+        }, totalTime)
+    }
     
     function startGame() {
         gameBoard.clearBoard()
+        displayMessage('Welcome! Are you ready for game of Tic-Tac-Toe?', 2000)
+        displayMessage('Then, pick your weapon and your warrior name!', 2000)
     }
     
     startGame()
-    gameBoard.updateBoardOnPlay()
-    // const player1 = playerFactory(prompt('Player 1 name'), 'O')
-    // const player2 = playerFactory(prompt('Player 2 name'), 'O')
     const player1 = playerFactory('Murillo', 'O')
     const player2 = playerFactory('Érica', 'X')
 
@@ -84,6 +101,6 @@ const game = (function () {
     allPlayUnits.forEach(div => div.addEventListener('click', gameBoard.playRound))
 
     return {
-
+        
     }
 })();
