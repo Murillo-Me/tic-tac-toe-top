@@ -87,26 +87,48 @@ const game = (function () {
         }, totalTime)
     }
 
-    function displayForm(numberOfInputs, ...message) {
+    function displayForm(numberOfInputs, message, chooseWeapon = false) {
         
         setTimeout(() => {
             const popUp = document.querySelector('.pop-up')
             popUp.classList.toggle('active')
             popUp.textContent = ''
-
+            icons = ['<i class="fas fa-gavel fa-2x"></i>', '<i class="fas fa-record-vinyl fa-2x"></i>']
             for (let i = 0; i < numberOfInputs; i++) {
-                popUp.innerHTML += `<span>${message[i]}</span>`
-                console.log(popUp);
-                console.log(message[i]);
+                if (!chooseWeapon) {
+                popUp.innerHTML += `
+                <label>${message[i]}</label>
+                <input type="text"></input>
+                `
+                } else {
+                    popUp.innerHTML += `
+                <label>${message[i]}</label>
+                <input type="text"></input>
+                <button>${icons[i]}</button>
+                `
+                }
             }
+            const chooseWeaponBtn = popUp.querySelectorAll('button')
+            console.log(chooseWeaponBtn);
+            console.log(icons[1]);
+            chooseWeaponBtn.forEach(btn => btn.addEventListener('click', () => {
+                if (btn.innerHTML.includes(icons[0].substring(0,23)))  {
+                    // console.log(btn.innerHTML);
+                    btn.innerHTML = icons[1]
+                    // chooseWeaponBtn.forEach(button => button.innerHTML = )
+                } else {
+                    // console.log(btn.innerHTML);
+                    btn.innerHTML = icons[0]
+                }
+            }))
         }, totalTime)
     }
     
     function startGame() {
         gameBoard.clearBoard()
         displayMessage('Welcome! Are you ready for game of Tic-Tac-Toe?', 2000)
-        displayMessage('Then, pick your weapon and your warrior name!', 2000)
-        displayForm(2, 'test', 'test2')
+        displayMessage('Then, pick your weapon and your name!', 2000)
+        displayForm(2, ['Player 1 name:', 'Player 2 name:'], true)
     }
     
     startGame()
