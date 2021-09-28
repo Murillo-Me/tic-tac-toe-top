@@ -103,10 +103,10 @@ header h1 {
     margin-inline: auto;
     left: 0;
     right: 0;
-    top: 40vh;
+    top: 39vh;
     width: min-content;
     height: fit-content;
-    min-width: 600px;
+    min-width: 550px;
     min-height: 200px;
     padding: 50px;
     background-color: white;

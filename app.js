@@ -93,7 +93,9 @@ const game = (function () {
             const popUp = document.querySelector('.pop-up')
             popUp.classList.toggle('active')
             popUp.textContent = ''
+            
             icons = ['<i class="fas fa-gavel fa-2x"></i>', '<i class="fas fa-record-vinyl fa-2x"></i>']
+
             for (let i = 0; i < numberOfInputs; i++) {
                 if (!chooseWeapon) {
                 popUp.innerHTML += `
@@ -108,20 +110,30 @@ const game = (function () {
                 `
                 }
             }
+
             const chooseWeaponBtn = popUp.querySelectorAll('button')
-            console.log(chooseWeaponBtn);
-            console.log(icons[1]);
-            chooseWeaponBtn.forEach(btn => btn.addEventListener('click', () => {
-                if (btn.innerHTML.includes(icons[0].substring(0,23)))  {
-                    // console.log(btn.innerHTML);
-                    btn.innerHTML = icons[1]
-                    // chooseWeaponBtn.forEach(button => button.innerHTML = )
-                } else {
-                    // console.log(btn.innerHTML);
-                    btn.innerHTML = icons[0]
-                }
-            }))
+            chooseWeaponBtn.forEach(btn => btn.addEventListener('click',swapSymbol))
+
         }, totalTime)
+    }
+
+    let iconIndex = 0
+
+    function swapSymbol() {
+        const allSymbolBtns = document.querySelector('.pop-up').querySelectorAll('button')
+        const aux = icons[iconIndex]
+
+        if (this == document.querySelector('.pop-up').querySelectorAll('button')[iconIndex]) {
+                    allSymbolBtns[iconIndex].innerHTML = icons[1 - iconIndex]
+                    allSymbolBtns[1 - iconIndex].innerHTML = icons[iconIndex]
+                    icons[iconIndex] = icons[1 - iconIndex]
+                    icons[1 - iconIndex] = aux
+        } else {
+            allSymbolBtns[1- iconIndex].innerHTML = icons[iconIndex]
+            allSymbolBtns[iconIndex].innerHTML = icons[1 - iconIndex]
+            icons[iconIndex] = icons[1 - iconIndex]
+            icons[1 - iconIndex] = aux
+        }
     }
     
     function startGame() {
