@@ -29,7 +29,7 @@ img {
 * {
     --unit-size: 200px;
     --unit-border-width: 3px;
-    --unit-font-size: 7rem;
+    --unit-font-size: 3rem;
     --unit-border-radius: calc(0.2 * var(--unit-size))
 }
 
@@ -75,7 +75,7 @@ header h1 {
     background-color: black;
     font-size: var(--unit-font-size);
     text-align: center;
-    line-height: var(--unit-size);
+    line-height: calc(var(--unit-size) + 35px);
     color: white;
     cursor: pointer;
 }

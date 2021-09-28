@@ -11,7 +11,7 @@ const game = (function () {
 
         function updateBoardOnPlay(index, symb) {
             console.log(this);
-            this.textContent = symb
+            this.innerHTML = symb
             boardArray[index] = symb
         }
 
@@ -24,7 +24,7 @@ const game = (function () {
         }
 
         function playRound(e) {
-            (roundNumber % 2 == 0) ? player1.play.call(e.currentTarget) : player2.play.call(e.currentTarget)
+            (roundNumber % 2 != 0) ? players[0].play.call(e.currentTarget) : players[1].play.call(e.currentTarget)
             checkWin()
         }
 
@@ -44,7 +44,7 @@ const game = (function () {
         }
     })();
 
-    const playerFactory = (name, symbol='X') => {
+    const playerFactory = (name, symbol) => {
 
         let winCounter = 0
         let playCounter = 0
@@ -106,7 +106,7 @@ const game = (function () {
                     popUp.innerHTML += `
                 <label>${message[i]}</label>
                 <input type="text"></input>
-                <button>${icons[i]}</button>
+                <button class="symbol-picker" tabindex="-1">${icons[i]}</button>
                 `
                 }
             }
@@ -139,14 +139,31 @@ const game = (function () {
     function startGame() {
         gameBoard.clearBoard()
         displayMessage('Welcome! Are you ready for game of Tic-Tac-Toe?', 2000)
-        displayMessage('Then, pick your weapon and your name!', 2000)
+        displayMessage('Then, pick your name and your weapon!', 2000)
+        startPlayers()
+        
+    }
+
+    function startPlayers() {
         displayForm(2, ['Player 1 name:', 'Player 2 name:'], true)
+        const popUp = document.querySelector('.pop-up')
+        popUp.addEventListener('keydown', (e) => {
+            if (e.keyCode == 13) {
+                const inputBoxes = popUp.querySelectorAll('input[type="text"]')
+                const symbolSelection = popUp.querySelectorAll('button.symbol-picker')
+                inputBoxes.forEach((input, i) => {
+                    console.log(input.value)
+                    console.log(symbolSelection[i]);
+                    players.push(playerFactory(input.value,symbolSelection[i].innerHTML))
+                })
+                popUp.classList.toggle('active')
+                popUp.textContent = ''
+            }
+        })
     }
     
     startGame()
-    const player1 = playerFactory('Murillo', 'O')
-    const player2 = playerFactory('Érica', 'X')
-
+    const players = []
 
     allPlayUnits.forEach(div => div.addEventListener('click', gameBoard.playRound))
 
