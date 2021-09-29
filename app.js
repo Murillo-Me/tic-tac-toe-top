@@ -195,8 +195,8 @@ const game = (function () {
     
     function startGame() {
         gameBoard.clearBoard()
-        displayMessage('Welcome! Are you ready for game of Tic-Tac-Toe?', 2000)
-        displayMessage('Then, pick your name and your weapon!', 2000)
+        displayMessage('Welcome! Are you ready for game of Tic-Tac-Toe?', 1500)
+        displayMessage('Then, pick your name and your weapon!', 1500)
         startPlayers()
         totalTime = 0
     }

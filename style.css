@@ -27,7 +27,7 @@ img {
 /* TIC-TAC-TOE */
 
 * {
-    --unit-size: 200px;
+    --unit-size: 150px;
     --unit-border-width: 3px;
     --unit-font-size: 3rem;
     --unit-border-radius: calc(0.2 * var(--unit-size))
@@ -64,6 +64,7 @@ main {
     justify-content: center;
     align-items: center;
     text-align: center;
+    flex-wrap: wrap;
 }
 
 .gameboard {
@@ -150,7 +151,7 @@ main {
     margin-inline: auto;
     left: 0;
     right: 0;
-    top: 39vh;
+    top: 30vh;
     width: min-content;
     height: fit-content;
     min-width: 550px;
@@ -219,4 +220,51 @@ main {
 
 button.play-button:hover {
     color: rgb(108, 108, 233);
+}
+
+@media only screen and (max-width: 970px){
+
+* {
+    --unit-size: calc(100vw/(3.4) - 10px);
+    --unit-border-width: 3px;
+    --unit-font-size: 1.7rem;
+    --unit-border-radius: calc(0.2 * var(--unit-size))
+}
+
+header {
+    padding: 20px;
+}
+
+header h1 {
+    font-size: 2.5rem;
+}
+
+.gameboard {
+    width: 100%;
+    margin-inline: 10px;
+}
+
+.player-info {
+    margin-top: 50px;
+    width: 45%;
+}
+
+.player-info:first-of-type {
+    order: 100;
+}
+
+.play-unit {
+    line-height: calc(var(--unit-size) + 20px);
+}
+
+.pop-up {
+    width: 270px;
+    min-width: 0px;
+    padding: 20px;
+}
+
+.pop-up input, .pop-up label {
+    width: 170px;
+}
+
 }
