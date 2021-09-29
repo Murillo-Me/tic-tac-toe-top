@@ -59,6 +59,13 @@ header h1 {
     width: fit-content;
 }
 
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
 .gameboard {
     width: calc(var(--unit-size) * 3 + var(--unit-border-width) * 2);
     height: calc(var(--unit-size) * 3 + var(--unit-border-width) * 2);
@@ -67,6 +74,7 @@ header h1 {
     align-items: center;
     flex-wrap: wrap;
     margin: auto;
+    margin-inline: 50px;
 }
 
 .play-unit {
@@ -94,6 +102,45 @@ header h1 {
 
 .third-row:last-of-type {
     border-bottom-right-radius: var(--unit-border-radius);
+}
+
+.player-info {
+    display: flex;
+    opacity: 0;
+    flex-direction: column;
+    justify-content: left;
+    align-items: center;
+
+    width: 200px;
+    height: fit-content;
+    margin: auto;
+    background-color: black;
+    background-image: linear-gradient( black, rgb(39, 39, 39));
+    border-radius: 20px;
+    color: white;
+    transition: all 0.5s ease;
+}
+
+.player-info.active {
+    opacity: 1;
+}
+
+.player-info h2 {
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.player-info span.player-symbol {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+.player-info span.player-score {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 15px;
 }
 
 .pop-up {
@@ -142,7 +189,7 @@ header h1 {
     width: 80%;
 }
 
-.pop-up button {
+.pop-up button.symbol-picker {
     width: 40px;
     height: 40px;
     margin-left: 20px;
@@ -150,4 +197,26 @@ header h1 {
     border: 1px solid black;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.pop-up button.play-button {
+    width: 100px;
+    height: 50px;
+    margin: auto;
+    margin-top: 30px;
+    background-color: black;
+    color: white;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    padding-inline: 20px;
+    cursor: pointer;
+}
+
+.pop-up button:hover, input:hover {
+    filter: drop-shadow(1px 1px 5px);
+}
+
+button.play-button:hover {
+    color: rgb(108, 108, 233);
 }

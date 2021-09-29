@@ -7,12 +7,15 @@ const game = (function () {
 
     const gameBoard = (function() {
 
-        const boardArray = new Array(9).fill(null)
+        const boardSymbolArray = new Array(9).fill(null)
 
         function updateBoardOnPlay(index, symb) {
-            console.log(this);
             this.innerHTML = symb
-            boardArray[index] = symb
+            boardSymbolArray[index] = symb
+            boardSymbolArray.forEach((symbol, i) => {
+                if (symbol == null) return
+                (symbol == players[0].symbol) ? players[0].boardArray[i] = 1 : players[1].boardArray[i] = 1
+            })
         }
 
         function clearBoard() {
@@ -24,30 +27,78 @@ const game = (function () {
         }
 
         function playRound(e) {
-            (roundNumber % 2 != 0) ? players[0].play.call(e.currentTarget) : players[1].play.call(e.currentTarget)
-            checkWin()
+            let player = null
+
+            if (roundNumber % 2 != 0) {
+                player = players[0];
+            } else {
+                player = players[1];
+            }
+
+            player.play.call(e.currentTarget);
+
+            const isWin = checkWin(player.boardArray)
+            if (!isWin) return
+            if (isWin == true) {
+                player.win()
+                console.log(player.winCounter);
+                reset()
+                updateScore()
+                return
+            }
+            if (isWin == 'DRAW') {
+                displayMessage("It's a draw! Play another round.",2000)
+                reset()
+                return
+            }
         }
 
-        function checkWin() {
-            if (roundNumber == 10) {
-                console.log('game over');
-                player1.win()
-                console.log(player1.isWinner());
+        function reset() {
+            for (let i = 0; i < boardSymbolArray.length; i++) {
+                boardSymbolArray[i] = null;
             }
+            roundNumber = 1
+            players.forEach(player => player.resetBoard());
+            allPlayUnits.forEach(div => div.textContent = '');
+            totalTime = 0
+        }
+
+        function checkWin(boardArray) {
+            // CHECK WIN ON FIRST ROW
+            if (roundNumber < 3) return false
+
+            if (boardArray[0] + boardArray[1] + boardArray[2] == 3 ||
+                boardArray[3] + boardArray[4] + boardArray[5] == 3 ||
+                boardArray[6] + boardArray[7] + boardArray[8] == 3 ||
+                boardArray[0] + boardArray[3] + boardArray[6] == 3 ||
+                boardArray[1] + boardArray[4] + boardArray[7] == 3 ||
+                boardArray[2] + boardArray[5] + boardArray[8] == 3 ||
+                boardArray[0] + boardArray[4] + boardArray[8] == 3 ||
+                boardArray[2] + boardArray[4] + boardArray[6] == 3) return true
+
+            if (roundNumber == 10) {
+                return 'DRAW'
+            }
+        }
+
+        function updateScore() {
+            const playersScore = document.querySelectorAll('.player-score')
+            playersScore.forEach((playerScore, i) => playerScore.textContent = `Score: ${players[i].winCounter}`)
         }
     
         return {
             clearBoard,
             nextRound,
             playRound,
-            updateBoardOnPlay
+            updateBoardOnPlay,
+            updateScore
         }
     })();
 
     const playerFactory = (name, symbol) => {
 
         let winCounter = 0
-        let playCounter = 0
+        const boardArray = new Array(9).fill(null)
 
         function getName() {
             return name
@@ -56,29 +107,34 @@ const game = (function () {
         function play() {
             gameBoard.updateBoardOnPlay.call(this,this.getAttribute('data-key'), symbol)
             gameBoard.nextRound()
-            playCounter++
         }
         
         function win() {
-            console.log(`Congratulations, ${name}! You have won!`);
-            winCounter++;
-            roundNumber = 1
+            displayMessage(`Congratulations, ${name}! You have won!<br>Play another round.<br>Win 3 rounds to win it all!`,2000)
+            console.log('player won');
+            console.log(winCounter);
+            winCounter += 1;
+        }
+
+        function resetBoard() {
+            for (let i = 0; i < boardArray.length; i++) {
+                boardArray[i] = null;
+            }
         }
 
         function isWinner() {
             return (winCounter == 3)
         }
 
-        return { name, symbol, play, win, isWinner, winCounter}
+        return { name, symbol, boardArray, play, win, isWinner, winCounter, resetBoard}
     }
 
     function displayMessage(message, messageTime) {
         const popUp = document.querySelector('.pop-up')
-        const span = popUp.querySelector('span')
         
         setTimeout(() => {
             popUp.classList.toggle('active')
-            span.textContent = message
+            popUp.innerHTML = `<span>${message}</span>`
         }, totalTime)
 
         totalTime += messageTime
@@ -111,7 +167,8 @@ const game = (function () {
                 }
             }
 
-            const chooseWeaponBtn = popUp.querySelectorAll('button')
+            popUp.innerHTML += '<button class="play-button">Play!</button>'
+            const chooseWeaponBtn = popUp.querySelectorAll('button.symbol-picker')
             chooseWeaponBtn.forEach(btn => btn.addEventListener('click',swapSymbol))
 
         }, totalTime)
@@ -120,10 +177,10 @@ const game = (function () {
     let iconIndex = 0
 
     function swapSymbol() {
-        const allSymbolBtns = document.querySelector('.pop-up').querySelectorAll('button')
+        const allSymbolBtns = document.querySelector('.pop-up').querySelectorAll('button.symbol-picker')
         const aux = icons[iconIndex]
 
-        if (this == document.querySelector('.pop-up').querySelectorAll('button')[iconIndex]) {
+        if (this == document.querySelector('.pop-up').querySelectorAll('button.symbol-picker')[iconIndex]) {
                     allSymbolBtns[iconIndex].innerHTML = icons[1 - iconIndex]
                     allSymbolBtns[1 - iconIndex].innerHTML = icons[iconIndex]
                     icons[iconIndex] = icons[1 - iconIndex]
@@ -141,25 +198,33 @@ const game = (function () {
         displayMessage('Welcome! Are you ready for game of Tic-Tac-Toe?', 2000)
         displayMessage('Then, pick your name and your weapon!', 2000)
         startPlayers()
-        
+        totalTime = 0
     }
 
     function startPlayers() {
         displayForm(2, ['Player 1 name:', 'Player 2 name:'], true)
-        const popUp = document.querySelector('.pop-up')
-        popUp.addEventListener('keydown', (e) => {
-            if (e.keyCode == 13) {
-                const inputBoxes = popUp.querySelectorAll('input[type="text"]')
-                const symbolSelection = popUp.querySelectorAll('button.symbol-picker')
-                inputBoxes.forEach((input, i) => {
-                    console.log(input.value)
-                    console.log(symbolSelection[i]);
-                    players.push(playerFactory(input.value,symbolSelection[i].innerHTML))
-                })
-                popUp.classList.toggle('active')
-                popUp.textContent = ''
-            }
+        const popUp = document.querySelector('.pop-up');
+        ['keydown', 'click'].forEach(evt => {
+            popUp.addEventListener(evt, (e) => {
+                if (e.keyCode == 13 || e.target == popUp.querySelector('button.play-button')) {
+                    const inputBoxes = popUp.querySelectorAll('input[type="text"]')
+                    const symbolSelection = popUp.querySelectorAll('button.symbol-picker')
+                    const allPlayerName = document.querySelectorAll('.player-info h2')
+                    const allScoreSpan = document.querySelectorAll('span.player-score')
+                    inputBoxes.forEach((input, i) => {
+                        players.push(playerFactory(input.value,symbolSelection[i].innerHTML))
+                        allPlayerName[i].textContent = players[i].name
+                        allScoreSpan[i].textContent = `Score: ${players[i].winCounter}`
+                        const symbolDisplays = document.querySelectorAll('span.player-symbol')
+                        symbolDisplays.forEach((span, i) => span.innerHTML = symbolSelection[i].innerHTML)
+                    })
+                    popUp.classList.toggle('active')
+                    popUp.textContent = ''
+                    document.querySelectorAll('.player-info').forEach(div => div.classList.toggle('active'))
+                }
+            }, false)
         })
+
     }
     
     startGame()
