@@ -4,6 +4,7 @@ const game = (function () {
     
     let roundNumber = 1
     let totalTime = 0
+    const winConditionRounds = 3
 
     const gameBoard = (function() {
 
@@ -41,19 +42,22 @@ const game = (function () {
             if (!isWin) return
             if (isWin == true) {
                 player.win()
-                console.log(player.winCounter);
-                reset()
+                resetRound()
                 updateScore()
+                if (player.isWinner()) {
+                    displayMessage(`Congratulation ${player.name}!!<br>You got ${winConditionRounds} rounds on your back.<br>You won it all! Good game :D`, 4000)
+                    setTimeout(resetAll, 4000)
+                }
                 return
             }
             if (isWin == 'DRAW') {
                 displayMessage("It's a draw! Play another round.",2000)
-                reset()
+                resetRound()
                 return
             }
         }
 
-        function reset() {
+        function resetRound() {
             for (let i = 0; i < boardSymbolArray.length; i++) {
                 boardSymbolArray[i] = null;
             }
@@ -63,9 +67,13 @@ const game = (function () {
             totalTime = 0
         }
 
+        function resetAll() {
+            window.location.reload()
+        }
+
         function checkWin(boardArray) {
             // CHECK WIN ON FIRST ROW
-            if (roundNumber < 3) return false
+            if (roundNumber < winConditionRounds) return false
 
             if (boardArray[0] + boardArray[1] + boardArray[2] == 3 ||
                 boardArray[3] + boardArray[4] + boardArray[5] == 3 ||
@@ -110,10 +118,10 @@ const game = (function () {
         }
         
         function win() {
-            displayMessage(`Congratulations, ${name}! You have won!<br>Play another round.<br>Win 3 rounds to win it all!`,2000)
-            console.log('player won');
-            console.log(winCounter);
-            winCounter += 1;
+            if (this.winCounter < winConditionRounds - 1) {
+                displayMessage(`Congratulations, ${name}! You have won!<br>Play another round.<br>Win ${winConditionRounds} rounds to win it all!`,3000)
+            }
+            this.winCounter += 1;
         }
 
         function resetBoard() {
@@ -123,13 +131,14 @@ const game = (function () {
         }
 
         function isWinner() {
-            return (winCounter == 3)
+            return (this.winCounter == winConditionRounds)
         }
 
         return { name, symbol, boardArray, play, win, isWinner, winCounter, resetBoard}
     }
 
     function displayMessage(message, messageTime) {
+        console.log(totalTime);
         const popUp = document.querySelector('.pop-up')
         
         setTimeout(() => {
@@ -138,6 +147,7 @@ const game = (function () {
         }, totalTime)
 
         totalTime += messageTime
+        console.log(totalTime);
         setTimeout(() => {
             popUp.classList.toggle('active')
         }, totalTime)
@@ -195,8 +205,8 @@ const game = (function () {
     
     function startGame() {
         gameBoard.clearBoard()
-        displayMessage('Welcome! Are you ready for game of Tic-Tac-Toe?', 1500)
-        displayMessage('Then, pick your name and your weapon!', 1500)
+        displayMessage('Welcome! Are you ready for game of Tic-Tac-Toe?', 2000)
+        displayMessage('Then, pick your name and your weapon!', 2000)
         startPlayers()
         totalTime = 0
     }
